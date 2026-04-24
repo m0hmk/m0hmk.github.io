@@ -30,7 +30,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
-            overflow-x: hidden; /* Prevents side-scrolling during animations */
+            overflow-x: hidden; 
         }
 
         /* Hero Banner Section */
@@ -38,13 +38,11 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            /* Changed to center to group the elements and remove the massive bottom gap */
             justify-content: center; 
             align-items: center;
             text-align: center;
             padding: 20px;
             
-            /* Fits the banner to the frame without cutting it */
             background-image: linear-gradient(rgba(10, 25, 47, 0.85), rgba(10, 25, 47, 1)), url('images/banner.png');
             background-size: contain; 
             background-position: center; 
@@ -57,37 +55,64 @@
             margin-bottom: 10px;
         }
 
-        /* Initial Load Blur Animation for Hero Title */
-        @keyframes blurIn {
-            0% { filter: blur(12px); opacity: 0; transform: scale(0.95); }
-            100% { filter: blur(0); opacity: 1; transform: scale(1); }
-        }
-
-        .hero-title {
+        /* --- Hero Entry Animations --- */
+        .observe-hero-title {
             font-size: 2.2rem;
             color: var(--text-main);
             margin-bottom: 15px;
             letter-spacing: 2px;
-            /* Applies the blur animation when the page opens */
-            animation: blurIn 1.5s ease-out forwards;
+            filter: blur(12px); 
+            opacity: 0; 
+            transform: scale(0.95);
+            /* Fast reset when scrolling away */
+            transition: filter 0.4s ease-out, opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .show-hero.observe-hero-title {
+            /* 0s delay + 1.2s duration = 1.2s total */
+            transition: filter 1.2s ease-out, opacity 1.2s ease-out, transform 1.2s ease-out;
         }
 
-        .hero p {
+        .observe-hero-text {
             font-size: 1.1rem;
             color: var(--text-muted);
             max-width: 600px;
-            /* margin-bottom: auto; removed to stop pushing the scroll button away */
+            opacity: 0; 
+            transform: translateY(20px) scale(0.95);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .show-hero.observe-hero-text {
+            /* 0.4s delay + 0.8s duration = 1.2s total */
+            transition: opacity 0.8s ease-out 0.4s, transform 0.8s ease-out 0.4s;
         }
 
-        /* Scroll Down Indicator */
+        .observe-hero-btn {
+            margin-top: 40px;
+            opacity: 0; 
+            transform: translateY(20px) scale(0.95);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+        .show-hero.observe-hero-btn {
+            /* 0.7s delay + 0.5s duration = 1.2s total */
+            transition: opacity 0.5s ease-out 0.7s, transform 0.5s ease-out 0.7s;
+        }
+
+        /* Classes added by JS to trigger Hero elements */
+        .show-hero {
+            filter: blur(0); 
+            opacity: 1; 
+            transform: translateY(0) scale(1);
+        }
+        /* ------------------------------ */
+
+        /* Scroll Down Indicator Bounce */
         .scroll-indicator {
             font-size: 0.9rem;
             color: var(--accent);
             text-decoration: none;
             text-transform: uppercase;
             letter-spacing: 2px;
+            display: inline-block;
             animation: bounce 2s infinite;
-            margin-top: 40px;
         }
 
         @keyframes bounce {
@@ -114,22 +139,41 @@
         }
 
         /* --- Scroll Animation Classes --- */
+        
+        /* Heading Animation Base */
         .hidden-blur {
             filter: blur(10px);
             opacity: 0;
-            transition: filter 1s ease-out, opacity 1s ease-out;
+            transition: filter 0.4s ease-out, opacity 0.4s ease-out;
+        }
+        
+        /* Heading Animation Active: 0s delay + 1.0s duration = 1.0s total */
+        .show-element.hidden-blur {
+            transition: filter 1.0s ease-out, opacity 1.0s ease-out;
         }
 
+        /* Card Animation Base */
         .hidden-lift {
             opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            transform: translateY(40px) scale(0.90);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
         }
 
+        /* Shared class applied by JS when in view */
         .show-element {
             filter: blur(0);
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0) scale(1);
+        }
+
+        /* Card 1: 0.3s delay + 0.7s duration = 1.0s total */
+        .show-element.hidden-lift.delay-1 {
+            transition: opacity 0.7s ease-out 0.3s, transform 0.7s ease-out 0.3s;
+        }
+        
+        /* Card 2: 0.5s delay + 0.5s duration = 1.0s total */
+        .show-element.hidden-lift.delay-2 {
+            transition: opacity 0.5s ease-out 0.5s, transform 0.5s ease-out 0.5s;
         }
         /* -------------------------------- */
 
@@ -191,27 +235,30 @@
 
     <header class="hero">
         <img src="images/logo.png" alt="MohitXplore Logo" class="logo-img">
-        <h1 class="hero-title">MohitXplore Research</h1>
-        <p>Exploring Computing Logic, Artificial Intelligence, and Digital Philosophy.</p>
-        <a href="#archives" class="scroll-indicator">Scroll to Explore ↓</a>
+        <h1 class="observe-hero-title">MohitXplore Research</h1>
+        <p class="observe-hero-text">Exploring Computing Logic, Artificial Intelligence, and Digital Philosophy.</p>
+        
+        <div class="observe-hero-btn">
+            <a href="#archives" class="scroll-indicator">Scroll to Explore ↓</a>
+        </div>
     </header>
 
     <main id="archives" class="archive-section">
         <h2 class="section-title hidden-blur">Research Timeline</h2>
 
         <div class="timeline">
-            <a href="april-2026/index.html" class="month-card hidden-lift">
+            <a href="april-2026/index.html" class="month-card hidden-lift delay-1">
                 <div>
                     <div class="month-title">April 2026</div>
-                    <div class="month-summary">Zero to Infinity: AI Roadmaps</div>
+                    <div class="month-summary">Zero to Infinity</div>
                 </div>
                 <div class="arrow">»</div>
             </a>
 
-            <a href="march-2026/index.html" class="month-card hidden-lift" style="transition-delay: 0.2s;">
+            <a href="march-2026/index.html" class="month-card hidden-lift delay-2">
                 <div>
                     <div class="month-title">March 2026</div>
-                    <div class="month-summary">Zero to Infinity: Logic Gates & Adders</div>
+                    <div class="month-summary">Zero to Infinity</div>
                 </div>
                 <div class="arrow">»</div>
             </a>
@@ -227,15 +274,16 @@
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if(entry.isIntersecting) {
-                        entry.target.classList.add('show-element');
-                        observer.unobserve(entry.target); 
+                        entry.target.classList.add('show-element', 'show-hero');
+                    } else {
+                        entry.target.classList.remove('show-element', 'show-hero');
                     }
                 });
             }, { 
                 threshold: 0.1 
             });
 
-            const hiddenElements = document.querySelectorAll('.hidden-blur, .hidden-lift');
+            const hiddenElements = document.querySelectorAll('.hidden-blur, .hidden-lift, .observe-hero-title, .observe-hero-text, .observe-hero-btn');
             hiddenElements.forEach((el) => observer.observe(el));
         });
     </script>
