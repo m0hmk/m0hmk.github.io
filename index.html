@@ -38,21 +38,21 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            /* Changed to flex-start and added padding-top to lift the logo higher */
-            justify-content: flex-start; 
+            /* Changed to center to group the elements and remove the massive bottom gap */
+            justify-content: center; 
             align-items: center;
             text-align: center;
-            padding: 15vh 20px 40px 20px;
+            padding: 20px;
             
-            /* Adjusted background to prevent severe cutting */
+            /* Fits the banner to the frame without cutting it */
             background-image: linear-gradient(rgba(10, 25, 47, 0.85), rgba(10, 25, 47, 1)), url('images/banner.png');
-            background-size: cover;
-            background-position: center top; /* Focuses on the top/center of the image */
+            background-size: contain; 
+            background-position: center; 
             background-repeat: no-repeat;
         }
 
         .logo-img {
-            max-width: 250px; /* Slightly smaller to fit the new text underneath */
+            max-width: 250px; 
             height: auto;
             margin-bottom: 10px;
         }
@@ -76,7 +76,7 @@
             font-size: 1.1rem;
             color: var(--text-muted);
             max-width: 600px;
-            margin-bottom: auto; /* Pushes the scroll indicator to the bottom */
+            /* margin-bottom: auto; removed to stop pushing the scroll button away */
         }
 
         /* Scroll Down Indicator */
@@ -114,7 +114,6 @@
         }
 
         /* --- Scroll Animation Classes --- */
-        /* These hide the elements initially, and the JS reveals them */
         .hidden-blur {
             filter: blur(10px);
             opacity: 0;
@@ -127,7 +126,6 @@
             transition: opacity 0.8s ease-out, transform 0.8s ease-out;
         }
 
-        /* The JS adds this class when the element comes into view */
         .show-element {
             filter: blur(0);
             opacity: 1;
@@ -226,23 +224,17 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Create a sensor (Intersection Observer)
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // If the element is visible on the screen...
                     if(entry.isIntersecting) {
-                        // Add the 'show-element' class to run the animation
                         entry.target.classList.add('show-element');
-                        // Stop observing once it has animated
                         observer.unobserve(entry.target); 
                     }
                 });
             }, { 
-                // Triggers when 10% of the element is visible
                 threshold: 0.1 
             });
 
-            // Tell the sensor to watch all elements with these classes
             const hiddenElements = document.querySelectorAll('.hidden-blur, .hidden-lift');
             hiddenElements.forEach((el) => observer.observe(el));
         });
